@@ -1,0 +1,198 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  --bg-base: #07030f;
+  --surface-base: #12091f;
+  --surface-elevated: #1b1030;
+  --violet-primary: #6d4cff;
+  --violet-secondary: #8b5cf6;
+  --blue-accent: #3b82f6;
+  --text-primary: #f8fafc;
+  --text-accent: #c4b5fd;
+  --text-muted: #94a3b8;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Space Grotesk", "Segoe UI Variable Text", sans-serif;
+  background:
+    radial-gradient(circle at top, rgba(109, 76, 255, 0.18), transparent 30%),
+    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.14), transparent 25%),
+    linear-gradient(180deg, #07030f 0%, #0b0614 100%);
+  color: var(--text-primary);
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background:
+    linear-gradient(rgba(196, 181, 253, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 181, 253, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(circle at center, black 28%, transparent 78%);
+  opacity: 0.15;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Sora", "Segoe UI Variable Display", sans-serif;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(139, 92, 246, 0.3);
+  color: var(--text-primary);
+}
+
+::-webkit-scrollbar {
+  width: 11px;
+  height: 11px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(7, 3, 15, 0.72);
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid rgba(7, 3, 15, 0.8);
+  background: linear-gradient(180deg, rgba(109, 76, 255, 0.65), rgba(59, 130, 246, 0.55));
+}
+
+.app-grid {
+  background-image:
+    linear-gradient(rgba(196, 181, 253, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(196, 181, 253, 0.06) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at center, black 25%, transparent 72%);
+}
+
+.glass-panel {
+  background: rgba(18, 9, 31, 0.72);
+  border: 1px solid rgba(196, 181, 253, 0.12);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(16px);
+}
+
+.glass-elevated {
+  background: rgba(27, 16, 48, 0.82);
+  border: 1px solid rgba(196, 181, 253, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+}
+
+.glass-pill {
+  border: 1px solid rgba(196, 181, 253, 0.12);
+  background: rgba(18, 9, 31, 0.64);
+  backdrop-filter: blur(10px);
+}
+
+.soft-outline {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 40px rgba(0, 0, 0, 0.24);
+}
+
+.command-input {
+  box-shadow: none;
+}
+
+.command-input:focus {
+  outline: none;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #6d4cff 0%, #3b82f6 100%);
+  color: var(--text-primary);
+  box-shadow: 0 8px 24px rgba(109, 76, 255, 0.35);
+  transition:
+    transform 180ms ease,
+    box-shadow 180ms ease,
+    filter 180ms ease;
+}
+
+.primary-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 10px 30px rgba(109, 76, 255, 0.38),
+    0 0 36px rgba(59, 130, 246, 0.18);
+  filter: saturate(1.08);
+}
+
+.secondary-button,
+.ghost-button {
+  border: 1px solid rgba(196, 181, 253, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text-primary);
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.secondary-button:hover,
+.ghost-button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(139, 92, 246, 0.35);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 24px rgba(59, 130, 246, 0.12);
+}
+
+.status-shimmer {
+  background-size: 200% 100%;
+  animation: shimmer 3.2s linear infinite;
+}
+
+.log-reveal {
+  animation: fade-up 360ms ease both;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
