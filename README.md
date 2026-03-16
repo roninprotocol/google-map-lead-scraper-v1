@@ -1,109 +1,87 @@
 # Google Maps Lead Scraper
 
-A production-ready split deployment project for extracting Google Maps business leads with a React frontend and a Playwright-powered Express backend.
+A full-stack web tool that extracts real business leads from Google Maps and delivers them as a clean, actionable dataset — no manual searching, no copy-pasting.
 
-## Project overview
+**Live Demo → [google-map-lead-scraper-v1.vercel.app](https://google-map-lead-scraper-v1.vercel.app/)**
 
-- `frontend/` contains the Vite + React UI intended for Vercel.
-- `backend/` contains the Express API and Playwright scraper intended for Railway.
-- The frontend talks to the backend through `VITE_API_BASE_URL`.
-- The backend exposes:
-  - `GET /health`
-  - `POST /scrape`
-  - `GET /progress/:jobId`
+![App Screenshot](screenshot.png)
 
-## Project structure
+---
 
-```text
-.
-|-- backend/
-|   |-- .dockerignore
-|   |-- .env.example
-|   |-- Dockerfile
-|   |-- package.json
-|   |-- tsconfig.json
-|   `-- src/
-|       |-- server.ts
-|       `-- lib/
-|           |-- formatter.ts
-|           |-- scraper.ts
-|           `-- searchBuilder.ts
-|-- frontend/
-|   |-- .env.example
-|   |-- package.json
-|   |-- tsconfig.json
-|   |-- vercel.json
-|   |-- vite.config.ts
-|   |-- index.html
-|   `-- src/
-|       |-- App.tsx
-|       |-- main.tsx
-|       |-- index.css
-|       |-- types.ts
-|       |-- lib/
-|       |   `-- api.ts
-|       |-- components/
-|       `-- utils/
-|-- DEPLOYMENT.md
-|-- package.json
-|-- tsconfig.base.json
-`-- tsconfig.json
-```
+## Features
 
-## Local setup
+- **Live result streaming** — results appear in the table the moment each business is extracted via Server-Sent Events (SSE), no waiting for the full scrape to finish
+- **Real Google Maps data** — scrapes directly from live Maps results using a headless Chromium browser
+- **Actionable rows** — click the phone icon to call, address icon to open in Maps, website icon to visit — all from the table
+- **Copy anything** — one-click copy on phone, address, and website fields
+- **Filter and sort** — filter by has phone, has website, has rating — sort by name, rating, or data completeness
+- **Select and export** — check individual rows and export only the leads you want as CSV
+- **Scrape summary** — see total leads, contact-ready count, and scrape duration after every run
 
-### 1. Install dependencies
+---
 
-This repository keeps a root toolchain for local development and separate package manifests for deployment targets.
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React + Vite + TypeScript |
+| Backend | Node.js + Express + TypeScript |
+| Scraper | Playwright (headless Chromium) |
+| Real-time | Server-Sent Events (SSE) |
+| Export | PapaParse (CSV generation) |
+| Server | Single Express server — serves API and frontend |
+
+---
+
+## How to Use
+
+### Live version
+Visit [google-map-lead-scraper-v1.vercel.app](https://google-map-lead-scraper-v1.vercel.app/) — no install needed.
+
+### Run locally
+
+**Prerequisites**
+- Node.js 18+
+- npm
+
+**Steps**
 
 ```bash
+# Clone the repo
+git clone https://github.com/YOUR_USERNAME/lead-scraper
+cd lead-scraper
+
+# Install dependencies
 npm install
+
+# Install Playwright browser
+npx playwright install chromium
+
+# Start the app
+npm run dev
 ```
 
-If you want isolated frontend/backend installs for deployment simulation, you can also install inside `frontend/` and `backend/` separately.
+Open `http://localhost:3000` in your browser.
 
-### 2. Configure environment files
+**Usage**
 
-Frontend:
+1. Enter a business type — e.g. `dentist`, `plumber`, `gym`
+2. Enter a city — e.g. `London`, `Karachi`, `Manchester`
+3. Click **Start Scrape**
+4. Watch results stream in live as each business is extracted
+5. Filter, sort, select rows
+6. Click **Download CSV** or **Export Selected**
 
-```bash
-cp frontend/.env.example frontend/.env
-```
+---
 
-Backend:
+## Important Note
 
-```bash
-cp backend/.env.example backend/.env
-```
+Google Maps CSS selectors can change without notice. If scraped fields return empty, open `backend/scraper.ts` and update the selectors inside `page.evaluate()` to match the current Maps DOM. Use Chrome DevTools → Inspect on a live Maps business page to find the correct selectors.
 
-### 3. Run the backend
+---
 
-Recommended: use Docker so you do not need to install Playwright browsers locally.
+## Built By
 
-```bash
-docker build -t gmaps-lead-scraper-backend ./backend
-docker run --rm -p 3000:8080 --env-file backend/.env gmaps-lead-scraper-backend
-```
+**Roninprotocol** — AI Automation Developer
 
-If you already have the Node dependencies locally and want to run the backend directly:
-
-```bash
-npm run dev:backend
-```
-
-### 4. Run the frontend
-
-```bash
-npm run dev:frontend
-```
-
-The frontend runs on `http://localhost:5173` by default and should target the backend defined by `frontend/.env`.
-
-## Deployment overview
-
-- Deploy `frontend/` to Vercel.
-- Deploy `backend/` to Railway using the included Dockerfile.
-- Set the frontend `VITE_API_BASE_URL` to the Railway backend URL.
-- Set backend `CORS_ALLOWED_ORIGINS` to include your Vercel frontend domain.
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for the full step-by-step deployment checklist.
+> Built as a portfolio project demonstrating full-stack TypeScript, browser automation with Playwright, and real-time data streaming with SSE.
