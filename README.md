@@ -48,7 +48,7 @@ Visit [google-map-lead-scraper-v1.vercel.app](https://google-map-lead-scraper-v1
 
 ```bash
 # Clone the repo
-git clone https://github.com/YOUR_USERNAME/lead-scraper
+git clone https://github.com/roninprotocol/google-map-lead-scraper-v1.git
 cd lead-scraper
 
 # Install dependencies
