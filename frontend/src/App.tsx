@@ -20,8 +20,8 @@ import type { BusinessRecord, ScrapeStreamEvent, Status } from './types';
 import { downloadCSV } from './utils/exportCSV';
 
 const creatorLinks = {
-  github: 'https://github.com/',
-  linkedin: 'https://www.linkedin.com/',
+  github: 'https://github.com/roninprotocol/google-map-lead-scraper-v1.git/',
+  linkedin: 'https://www.linkedin.com/in/ronin-khan-84a3823ab//',
 };
 
 function deriveProgress(messages: string[], resultsCount: number) {
@@ -80,6 +80,8 @@ export default function App() {
   const [now, setNow] = useState(() => Date.now());
   const eventSourceRef = useRef<EventSource | null>(null);
   const deferredResults = useDeferredValue(results);
+  // ADD THIS: Selection state for row selection
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     return () => {
@@ -133,7 +135,14 @@ export default function App() {
               setLogMessages((prev) => [...prev, data.data.message]);
             } else if (data.type === 'result') {
               setResults((prev) => {
-                const newResults = [...prev, data.data];
+                // ADD THIS: Generate stable ID for each record
+                const record = data.data;
+                const _id = [record.name, record.address, record.phone]
+                  .join('|')
+                  .toLowerCase()
+                  .replace(/\s+/g, '');
+                const newRecord = { ...record, _id };
+                const newResults = [...prev, newRecord];
                 if (prev.length === 0) {
                   setStatus('streaming');
                 }
@@ -186,6 +195,39 @@ export default function App() {
     setStartedAt(null);
     setFinishedAt(null);
     setDownloadFeedback('Download CSV');
+    // ADD THIS: Clear selection on new search
+    setSelectedIds(new Set());
+  }
+
+  // ADD THIS: Toggle single row selection
+  function onToggleRow(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  }
+
+  // ADD THIS: Toggle all displayed rows
+  function onToggleAll(allIds: string[]) {
+    setSelectedIds((prev) => {
+      const allSelected = allIds.every((id) => prev.has(id));
+      if (allSelected) {
+        // Deselect all displayed
+        const next = new Set(prev);
+        allIds.forEach((id) => next.delete(id));
+        return next;
+      } else {
+        // Select all displayed
+        const next = new Set(prev);
+        allIds.forEach((id) => next.add(id));
+        return next;
+      }
+    });
   }
 
   function handleDownloadAll() {
@@ -193,7 +235,13 @@ export default function App() {
       return;
     }
 
-    downloadCSV(deferredResults, currentKeyword, currentLocation);
+    // ADD THIS: Export selected or all based on selection state
+    if (selectedIds.size > 0) {
+      const selectedResults = deferredResults.filter((r) => selectedIds.has(r._id));
+      downloadCSV(selectedResults, currentKeyword, currentLocation);
+    } else {
+      downloadCSV(deferredResults, currentKeyword, currentLocation);
+    }
     setDownloadFeedback('CSV Ready');
     window.setTimeout(() => {
       setDownloadFeedback('Download CSV');
@@ -389,13 +437,20 @@ export default function App() {
                     className="primary-button inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold"
                   >
                     <Download className="h-4 w-4" />
-                    {downloadFeedback}
+                    {/* ADD THIS: Dynamic label based on selection */}
+                    {selectedIds.size > 0 ? `Export Selected (${selectedIds.size})` : downloadFeedback}
                   </button>
                 </div>
               </div>
             </div>
 
-            <ResultsTable data={deferredResults} />
+            {/* ADD THIS: Pass selection props to ResultsTable */}
+            <ResultsTable
+              data={deferredResults}
+              selectedIds={selectedIds}
+              onToggleRow={onToggleRow}
+              onToggleAll={onToggleAll}
+            />
           </section>
         )}
 

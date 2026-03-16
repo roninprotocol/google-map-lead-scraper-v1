@@ -1,6 +1,7 @@
 export type Status = 'idle' | 'loading' | 'streaming' | 'success' | 'error';
 
 export interface BusinessRecord {
+  _id: string; // ADD THIS: stable ID for selection
   name: string;
   category: string;
   address: string;

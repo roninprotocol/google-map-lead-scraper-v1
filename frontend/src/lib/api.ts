@@ -5,7 +5,7 @@ const configuredApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 
 export const API_BASE_URL = configuredApiBaseUrl
   ? configuredApiBaseUrl.replace(/\/+$/, '')
-  : (import.meta.env.DEV ? 'http://localhost:3000' : '');
+  : (import.meta.env.DEV ? '/api' : '');
 
 export function createApiUrl(path: string) {
   if (!path.startsWith('/')) {
